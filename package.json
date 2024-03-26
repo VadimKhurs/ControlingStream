@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "start": "node index.js"
+  },
+  "devDependencies": {
+    "node-key-sender": "^1.0.11"
+  },
+  "dependencies": {
+    "tiktok-live-connector": "^1.1.5"
+  }
+}
