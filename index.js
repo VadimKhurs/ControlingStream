@@ -1,25 +1,17 @@
-const findPrime = require("./findPrime");
 const findPrimeNative = require("./build/Release/findprimes");
 
-const input = 20000;
+//console.time("Native");
 
-let result;
+let command = "/Hello";
 
-console.time("Native");
-result = findPrimeNative(input, 10);
-console.timeEnd("Native");
-console.log(result);
-
-console.time("JS Find Primes");
-result = findPrime(input);
-console.timeEnd("JS Find Primes");
-console.log(result);
+findPrimeNative(command.replace("/", ""));
+//console.timeEnd("Native");
 
 /*
 const { WebcastPushConnection } = require("tiktok-live-connector");
 
 // Username of someone who is currently live
-let tiktokUsername = "_isurprised_";
+let tiktokUsername = "the.monster32";
 
 // Create a new wrapper object and pass the username
 let tiktokLiveConnection = new WebcastPushConnection(tiktokUsername);
@@ -41,7 +33,9 @@ tiktokLiveConnection.on("chat", (data) => {
     `${data.uniqueId} (userId:${data.userId}) writes: ${data.comment}`
   );
 
-  if (data.comment[0] == "/") {
+  findPrimeNative(data.comment);
+
+  /*if (data.comment[0] == "/") {
     keySender.sendKeys(["a", "b"]);
   }
 });

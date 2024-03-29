@@ -1,77 +1,90 @@
 #include <node_api.h>
 #include <Windows.h>
 #include <iostream>
-using namespace std;
+#include <string>
+#include <conio.h>
 
-int is_prime(int num)
-{
-    if (num <= 1)
-        return 0;
-    for (int i = 2; i <= num / 2; i++)
-    {
-        if (num % i == 0)
-        {
-        return 0;
-        }
-    }
-    return 1; //if both failed then num is prime
+void clipBoardCopy(char* command){
+    const size_t len = strlen(command) + 1;
+    HGLOBAL hMem =  GlobalAlloc(GMEM_MOVEABLE, len);
+    memcpy(GlobalLock(hMem), command, len);
+    GlobalUnlock(hMem);
+    OpenClipboard(0);
+    EmptyClipboard();
+    SetClipboardData(CF_TEXT, hMem);
+    CloseClipboard();
 }
 
-int find_prime(int upper_limit, int ten)
-{
-  int largest_prime;
-    cout << ten << endl;
-  
-  for (int i = 2; i <= upper_limit; i++)
-  {
-    if (is_prime(i))
-    {
-      largest_prime = i;
+void cursor(){
+    while(true){
+        char g = getch();
+        POINT xypos;
+        if (g == 'a' || g == 'A')
+		{
+            GetCursorPos(&xypos);
+			SetCursorPos(xypos.x + 10, xypos.y + 10);
+		}
+
     }
-  }
+}
+
+void clickButton(WORD *key)
+{
+    INPUT *input = new INPUT;
+    input->type = INPUT_KEYBOARD; 
+    input->ki.wScan = *key;
     
-
-    INPUT input = {0};
-    input.type = INPUT_KEYBOARD;
-    input.ki.wVk = VkKeyScanA('a');
-    SendInput(1, &input, sizeof(input));
-    ZeroMemory(&input, sizeof(input));
-    input.ki.dwFlags = KEYEVENTF_KEYUP;
-    SendInput(1, &input, sizeof(input));
-
-
-
-
-    return largest_prime;
+    input->ki.dwFlags = KEYEVENTF_SCANCODE;
+    SendInput(1, input, sizeof(INPUT));
+    Sleep(3000); // hold key for x milliseconds
+    
+    input->ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+    SendInput(1, input, sizeof(INPUT));
+    delete input;
 }
 
-napi_value FindPrimes(napi_env env, napi_callback_info info){
+void checkCommand(std::string *command){
 
-    size_t argc = 2;
-    napi_value args[2];
-    int64_t upper_limit;
-    int64_t ten;
-    int64_t largest_prime;
-    napi_value output;
+}
+
+napi_value start(napi_env env, napi_callback_info info){
+    size_t argc = 1;
+
+    napi_value args[1];
 
     napi_get_cb_info(env, info, &argc, args, NULL, NULL);
 
-    napi_get_value_int64(env, args[0], &upper_limit);
-    napi_get_value_int64(env, args[1], &ten);
+    //get size of string
+    size_t str_size;
+    size_t str_size_read;
+    napi_get_value_string_utf8(env, args[0], NULL, 0, &str_size);
 
-    largest_prime = find_prime(upper_limit, ten);
+    //get string
+    char * buf;
+    buf = (char*)calloc(str_size + 1, sizeof(char));
+    str_size = str_size + 1;
+    napi_get_value_string_utf8(env, args[0], buf, str_size, &str_size_read);
+    
+    std::string *command = new std::string(buf); 
+    checkCommand(command);
+    //WORD key = 0x4B;
+    //clickButton(&key);
+    
+    //clipBoardCopy("asd");
+    
+    //cursor();
 
-    napi_create_double(env, largest_prime, &output);
-    return output;
+    free(buf);
+    return napi_value(0);
 }
 
 napi_value init(napi_env env, napi_value exports)
 {
-    napi_value find_primes;
+    napi_value resultCode;
 
-    napi_create_function(env, nullptr, 0, FindPrimes, nullptr, &find_primes);
+    napi_create_function(env, nullptr, 0, start, nullptr, &resultCode);
 
-    return find_primes;
+    return resultCode;
 }
 
 

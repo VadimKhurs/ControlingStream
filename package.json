@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "node index.js"
+    "start": "node-gyp build && node index.js"
   },
   "devDependencies": {
     "node-key-sender": "^1.0.11"
