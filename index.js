@@ -1,10 +1,11 @@
 const findPrimeNative = require("./build/Release/findprimes");
-
+const giftsCommands = require("./build/Release/giftsCommands");
 //console.time("Native");
 
-let command = "/Hello";
-
-findPrimeNative(command.replace("/", ""));
+//let command = "/i right";
+let gift = "Hello";
+////findprimes(command.replace("/", ""));
+giftsCommands(gift);
 //console.timeEnd("Native");
 
 /*

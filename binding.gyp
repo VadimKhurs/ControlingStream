@@ -3,7 +3,13 @@
         {
             "target_name": "findprimes",
             "sources": [
-                "findprimes.cc"
+                "findprimes.cc",
+            ]
+        },
+        {
+            "target_name": "giftsCommands",
+            "sources": [
+                "giftsCommands.cc",
             ]
         }
     ]
